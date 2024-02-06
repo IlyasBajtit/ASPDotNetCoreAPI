@@ -1,4 +1,9 @@
+using Exercice01API.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer("Data source=(localdb)\\Marmoset;Database=ConctactTP"));
 
 // Add services to the container.
 
@@ -23,3 +28,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
