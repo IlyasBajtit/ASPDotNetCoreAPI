@@ -1,4 +1,6 @@
 using Exercice01API.Data;
+using Exercice01API.Models;
+using Exercice01API.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +13,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<IRepository<Contact>, ContactRepository>();
 
 var app = builder.Build();
 
