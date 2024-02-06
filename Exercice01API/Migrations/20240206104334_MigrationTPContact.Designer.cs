@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Exercice01API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240206090412_MigrationTPContact")]
+    [Migration("20240206104334_MigrationTPContact")]
     partial class MigrationTPContact
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
