@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+﻿using Exercice01API.Models;
+using Exercice01API.Repositories;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Exercice01API.Controllers
 {
@@ -8,36 +9,74 @@ namespace Exercice01API.Controllers
     [ApiController]
     public class ContactController : ControllerBase
     {
-        // GET: api/<Contact>
+        private readonly IRepository<Contact> _contactRepository;
+
+        public ContactController(IRepository<Contact> contactRepository)
+        {
+            _contactRepository = contactRepository;
+        }
+
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IActionResult GetAll()
         {
-            return new string[] { "value1", "value2" };
+            var contacts = _contactRepository.GetAll();
+            return Ok(contacts);
         }
 
-        // GET api/<Contact>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public IActionResult GetById(int id)
         {
-            return "value";
+            var contact = _contactRepository.GetById(id);
+
+            if (contact == null)
+                return NotFound(new
+                {
+                    Message = "Contact non trouvé !"
+                });
+
+            return Ok(new
+            {
+                Message = "Contact trouvé !",
+                Contact = contact
+            });
         }
 
-        // POST api/<Contact>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public IActionResult Post([FromBody] Contact contact)
         {
+            _contactRepository.Add(contact);
+
+            return CreatedAtAction(nameof(GetById), new { id = contact.Id }, "Contact ajouté");
         }
 
-        // PUT api/<Contact>/5
+        [HttpGet("search")]
+        public IActionResult SearchByFirstName(string firstName)
+        {
+            var contacts = _contactRepository.GetAll(c => c.FirstName.StartsWith(firstName));
+            if (contacts == null || !contacts.Any()) return NotFound();
+            return Ok(contacts);
+        }
+
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public IActionResult Update(int id, Contact contact)
         {
+            if (id != contact.Id) return BadRequest();
+
+            var existingContact = _contactRepository.GetById(id);
+            if (existingContact == null) return NotFound();
+
+            _contactRepository.Update(contact);
+            return NoContent();
         }
 
-        // DELETE api/<Contact>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
+            var contact = _contactRepository.GetById(id);
+            if (contact == null) return NotFound();
+
+            _contactRepository.Delete(id);
+            return NoContent();
         }
     }
 }
