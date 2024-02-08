@@ -5,7 +5,7 @@ namespace Exercice01API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class Authentification : ControllerBase
+    public class AuthentificationController : ControllerBase
     {
     }
 }
